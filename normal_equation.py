@@ -70,30 +70,16 @@ def normal_equation_solve(X, y):
 # y = 2 + 3*x + noise
 
 # Generating data points
-# np.random.seed(42)
-# m = 100 # 100 data points
-# x = np.arange(100).reshape((-1,1))
-# ones = np.ones((100, 1))
-# X = np.hstack((ones, x))
-# delta = np.random.normal(0, 10, size = (100,))
-# y = .4 * x + 3 + delta
+np.random.seed(42)
+m = 100 # 100 data points
+x = np.arange(100).reshape((-1,1))
+ones = np.ones((100, 1))
+X = np.hstack((ones, x))
+delta = np.random.normal(0, 10, size = (100,1))
+y = .4 * x + 3 + delta
+
+res = normal_equation(X, y)
+print(res)
 
 # plt.plot(x, y, linestyle = "none", marker = ".")
 # plt.show()
-
-np.random.seed(42) # for reproducibility
-m = 100 # number of data points
-x = 2 * np.random.rand(m, 1) # Feature: random values between 0 and 2
-y = 4 + 3 * x + np.random.randn(m, 1) # Target: linear relationship + noise
-
-# 2. Construct the Design Matrix X
-# Add a column of ones to x for the intercept term (theta_0)
-# np.c_ concatenates arrays along the second axis (columns)
-X_b = np.c_[np.ones((m, 1)), x] # X_b now has shape (100, 2)
-print(X_b)
-# 3. Solve for theta using the Normal Equation
-theta_optimal = normal_equation_solve(X_b, y)
-
-res = normal_equation_solve(X_b, y)
-print(res)
-print(res.shape)
