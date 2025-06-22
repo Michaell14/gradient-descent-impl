@@ -35,48 +35,66 @@ def normal_equation(X, y):
     return theta
 
 print("Select sample to test: ")
-print("1) Car Price Prediction")
-print("2) Housing Price Prediction")
+print("1) Single feature Prediction")
+print("2) Car Price Prediction")
+print("3) Housing Price Prediction")
 print("Enter a number.")
 choice = int(input())
 
 df = None
+x = None
+
 match choice:
     case 1:
+        m = 100 # 100 data points
+        x = np.arange(100).reshape((-1,1))
+        ones = np.ones((100, 1))
+        X = np.hstack((ones, x))
+        delta = np.random.normal(0, 10, size = (100,1))
+        y = .4 * x + 3 + delta
+        
+    case 2:
         df = pd.read_csv("samples/used_car_price_dataset.csv", sep=",")
         df = df.drop(columns = ['fuel_type', 'brand', 'transmission', 'color', 'service_history', "insurance_valid"], axis = 1)
-    case 2:
-        df = df.read_csv("samples/housing_price_dataset.csv", sep = ",")
+        print(df.head(5))
+        m = len(df)
+        
+        x = df.drop(columns = ["price_usd"], axis = 1)
+
+        X = np.hstack((np.ones((m, 1)), x))
+        y = df["price_usd"]
+    case 3:
+        df = pd.read_csv("samples/housing_price_dataset.csv", sep = ",")
+        df = df.drop(columns = ['Neighborhood'], axis = 1)
+        print(df.head(5))
+        m = len(df)
+
+        x = df.drop(columns = ["price_usd"], axis = 1)
+
+        X = np.hstack((np.ones((m, 1)), x))
+        y = df["price_usd"]
     case _:
         print("Unknown selection")
-
-if df is None:
-    quit()
-
-print(df.head(5))
-m = len(df)
-
-x = df.drop(columns = ["price_usd"], axis = 1)
-
-X = np.hstack((np.ones((m, 1)), x))
-y = df["price_usd"]
+        quit()
 
 theta = normal_equation(X, y)
 print(theta)
-# # Generating data points
-# np.random.seed(42)
-# m = 100 # 100 data points
-# x = np.arange(100).reshape((-1,1))
-# ones = np.ones((100, 1))
-# X = np.hstack((ones, x))
-# delta = np.random.normal(0, 10, size = (100,1))
-# y = .4 * x + 3 + delta
 
-# res = normal_equation(X, y)
-# print(res)
+# Small sample choice w/ graph
+if choice == 1:
+    plt.plot(x, y, linestyle = "none", marker = ".")
+    plt.title(f"y = {theta[0][0]} + {theta[1][0]}x")
+    plt.ylabel('X-axis')
+    plt.ylabel('Y-axis')
+    regression = theta[0][0] + x * theta[1][0]
+    plt.plot(x, regression)
+    plt.show()
+else:
+    for i in range(len(x.columns)):
+        print(f"Theta for {x.columns[i]} is {theta[i + 1]}")
 
-# plt.plot(x, y, linestyle = "none", marker = ".")
+    print(f"The equation is: y = {theta[0]}", end = "")
+    for i in range(len(x.columns)):
+        print(f" + {theta[i + 1]} * x_{i + 1}", end = "")
 
-# regression = res[0][0] + x * res[1][0]
-# plt.plot(x, regression)
-# plt.show()
+    
