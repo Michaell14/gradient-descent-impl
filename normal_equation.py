@@ -5,18 +5,9 @@ import pandas as pd
 # np.transpose(X) = X.T
 # np.matmul(X, y) = X @ y
 
-def normal_equation(X, y):
-    # Args:
-    #     X (numpy.ndarray): The design matrix. Must include a column of ones
-    #                        for the intercept term if desired.
-    #                        Shape: (m, n+1) where m is samples, n is features.
-    #     y (numpy.ndarray): The target variable vector.
-    #                        Shape: (m, 1) or (m,)
-
-    # Returns:
-    #     numpy.ndarray: The optimal parameter vector (theta).
-    #                    Shape: (n+1, 1)
-
+def normal_equation(x, y):
+    m = len(y)
+    X = np.c_[np.ones((m, 1)), x]
     # X^T * X   
     X_T_X = X.T @ X 
 
@@ -46,12 +37,10 @@ x = None
 
 match choice:
     case 1:
+        np.random.seed(42)
         m = 100 # 100 data points
-        x = np.arange(100).reshape((-1,1))
-        ones = np.ones((100, 1))
-        X = np.hstack((ones, x))
-        delta = np.random.normal(0, 10, size = (100,1))
-        y = .4 * x + 3 + delta
+        x = 2 * np.random.rand(100, 1)
+        y = 2 * x + 3 + np.random.randn(100, 1)
         
     case 2:
         df = pd.read_csv("samples/used_car_price_dataset.csv", sep=",")
@@ -60,8 +49,6 @@ match choice:
         m = len(df)
         
         x = df.drop(columns = ["price_usd"], axis = 1)
-
-        X = np.hstack((np.ones((m, 1)), x))
         y = df["price_usd"]
     case 3:
         df = pd.read_csv("samples/housing_price_dataset.csv", sep = ",")
@@ -70,14 +57,12 @@ match choice:
         m = len(df)
 
         x = df.drop(columns = ["price_usd"], axis = 1)
-
-        X = np.hstack((np.ones((m, 1)), x))
         y = df["price_usd"]
     case _:
         print("Unknown selection")
         quit()
 
-theta = normal_equation(X, y)
+theta = normal_equation(x, y)
 print(theta)
 
 # Small sample choice w/ graph
